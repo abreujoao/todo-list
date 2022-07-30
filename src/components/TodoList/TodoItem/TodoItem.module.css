@@ -2,6 +2,7 @@
 
 .todo-item{
     display: flex;
+    margin: 5px;
 }
 
 .todo-item p {
