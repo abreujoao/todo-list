@@ -1,13 +1,11 @@
-import styles from "./TodoItem.module.css";
 import { useEffect, useRef, useState } from "react";
+import { useTodo } from "../../../contexts/TodoContext";
 import { ITodo } from "../../../types/Todo";
 import Button from "../Button";
-import TodoList from "..";
+import styles from "./TodoItem.module.css";
 
 type Props = {
-   todo:ITodo,
-   editTodo: (updatedTodo:ITodo)=>void;
-   deleteTodo: VoidFunction
+   todo:ITodo;
 }
 
 export default function TodoItem(props: Props) {
@@ -16,14 +14,16 @@ export default function TodoItem(props: Props) {
 
     const inputRef = useRef<HTMLInputElement>(null!);
 
-    function editTodo() {
-        props.editTodo({...props.todo, description:editText})
+    const { editTodo, deleteTodo} = useTodo();
+
+    function onEditTodo() {
+        editTodo({...props.todo, description:editText})
         setEditMode(false);
 
     }
 
     function onCompleteTodo(){
-        props.editTodo({ ...props.todo, completed: !props.todo.completed})
+        editTodo({ ...props.todo, completed: !props.todo.completed})
     }
 
     function onStartEditing(){
@@ -33,7 +33,7 @@ export default function TodoItem(props: Props) {
 
     function onDelete(){
         if (window.confirm("Você realmente deseja remover essa tarefa?")){
-            props.deleteTodo();
+            deleteTodo(props.todo.id);
         }
     }
 
@@ -55,7 +55,7 @@ export default function TodoItem(props: Props) {
                         <Button
                             backgroundColor="green"
                             icon="fa-solid fa-check"
-                            onClick={editTodo}
+                            onClick={onEditTodo}
                         />
                     </>
                     : <>
